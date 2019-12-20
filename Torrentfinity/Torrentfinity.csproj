@@ -921,6 +921,7 @@
     <Content Include="extensions.bundle.js" />
     <Content Include="Mvc\Controllers\readme.txt" />
     <Content Include="Mvc\Models\readme.txt" />
+    <Content Include="Mvc\Scripts\Torrents\torrents-widget.js" />
     <Content Include="Mvc\Views\readme.txt" />
     <Content Include="Mvc\Views\Shared\readme.txt" />
     <Content Include="ResourcePackages\Bootstrap4\assets\dist\css\main.css" />
@@ -1051,9 +1052,15 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\NinjectModules\TorrentsModule.cs" />
     <Compile Include="App_Start\RazorGeneratorMvcStart.cs" />
     <Compile Include="AzureWebRole.cs" />
+    <Compile Include="Mvc\Controllers\TorrentsController.cs" />
+    <Compile Include="Mvc\Models\GenreViewModel.cs" />
+    <Compile Include="Mvc\Models\TorrentViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sitefinity\Services\DynamicModules\Torrents\ITorrentsService.cs" />
+    <Compile Include="Sitefinity\Services\DynamicModules\Torrents\TorrentsService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="AdminApp\config.json" />
@@ -1062,6 +1069,7 @@
     <Content Include="App_Data\RadSpell\en-US.tdf" />
     <Content Include="App_Data\RadSpell\de-DE.tdf" />
     <Content Include="App_Data\GeoLocation\GeoLite2-City.mmdb" />
+    <Content Include="Mvc\Views\Torrents\Index.cshtml" />
     <None Include="packages.config" />
     <Content Include="SampleTemplate.cshtml">
       <Generator>RazorGenerator</Generator>
@@ -1233,6 +1241,7 @@
     <Analyzer Include="packages\AWSSDK.SQS.3.3.102.11\analyzers\dotnet\cs\AWSSDK.SQS.CodeAnalysis.dll" />
     <Analyzer Include="packages\AWSSDK.SQS.3.3.102.11\analyzers\dotnet\cs\AWSSDK.SQS.CodeAnalysis.dll" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
