@@ -19,6 +19,6 @@ namespace Torrentfinity.Mvc.Models
         
         public string DownloadLink { get; set; }
 
-       // Image
+        public HttpPostedFileBase FileAttach { get; set; }
     }
 }

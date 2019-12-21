@@ -1,5 +1,6 @@
 ﻿namespace Torrentfinity.Mvc.Controllers
 {
+    using System.Web;
     using System.Web.Mvc;
     using Telerik.Sitefinity.Mvc;
     using Torrentfinity.Mvc.Models;
@@ -22,7 +23,7 @@
         }
 
         [HttpPost]
-        public ActionResult Create(TorrentViewModel model)
+        public ActionResult Create(TorrentViewModel model, HttpPostedFileBase image)
         {
             this.torrentsService.CreateTorrent(model);
 
