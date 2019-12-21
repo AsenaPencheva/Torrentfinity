@@ -2,7 +2,7 @@
     var initializeTorrentsWidget = function (element) {
         const sf_appPath = window.sf_appPath || "/";
         const widget = $(element);
-
+        console.log(f_appPath);
         //widget.find('a[data-role=vote-link]').each(function (index, value) {
         //    var link = $(value);
         //    var id = index + (currentPage - 1) * 5; // PageSize is a constant 5
@@ -26,6 +26,8 @@
     $(function () {
         $('[data-role=torrents-widget]').each(function (index, value) {
             initializeTorrentsWidget(value);
+            console.log('fsdfad');
+
             var designerModule = angular.module('designer');
             console.log(designerModule);
             angular.module('designer').requires.push('sfFields');

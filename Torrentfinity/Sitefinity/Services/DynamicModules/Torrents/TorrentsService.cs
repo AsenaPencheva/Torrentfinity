@@ -35,11 +35,7 @@
 
         public void CreateTorrent(TorrentViewModel model)
         {
-            // Set the provider name for the DynamicModuleManager here. All available providers are listed in
-            // Administration -> Settings -> Advanced -> DynamicModules -> Providers
             var providerName = "OpenAccessProvider";
-
-            // Set a transaction name and get the version manager
             var transactionName = "createTorrentTransaction";
             var versionManager = VersionManager.GetManager(null, transactionName);
 
@@ -67,19 +63,16 @@
             torrentItem.SetValue("Owner", SecurityManager.GetCurrentUserId());
             torrentItem.SetValue("PublicationDate", DateTime.UtcNow);
 
-
-            // Get related item manager
             LibrariesManager imageManager = LibrariesManager.GetManager();
-            Image imageItem = this.CreateImage(model.FileAttach);
+
+
+            Guid imageItemId = this.CreateImage(model.FileAttach);
             //   imageManager.GetImages().FirstOrDefault(i => i.Status == Telerik.Sitefinity.GenericContent.Model.ContentLifecycleStatus.Master);
-            if (imageItem != null)
-            {
-                torrentItem.CreateRelation(imageItem, "Image");
-            }
+          
+                torrentItem.CreateRelation(imageItemId, providerName, "Image", "Image");
+           
 
             torrentItem.SetWorkflowStatus(dynamicModuleManager.Provider.ApplicationName, "Draft", new CultureInfo(cultureName)); // draft???
-
-            // Create a version and commit the transaction in order changes to be persisted to data store
             versionManager.CreateVersion(torrentItem, false); // true?
             TransactionManager.CommitTransaction(transactionName);
 
@@ -90,14 +83,11 @@
             TransactionManager.CommitTransaction(transactionName);
         }
 
-        private Image CreateImage(HttpPostedFileBase fileAttach)
+        private Guid CreateImage(HttpPostedFileBase fileAttach)
         {
             LibrariesManager librariesManager = LibrariesManager.GetManager();
-            //The album post is created as master. The masterImageId is assigned to the master version.
             Image image = librariesManager.CreateImage();
-
-            //Set the parent album.
-            Album album = librariesManager.GetAlbums().FirstOrDefault(); // get the default album
+            Album album = librariesManager.GetAlbums().FirstOrDefault();
             image.Parent = album;
 
             //Set the properties of the album post.
@@ -120,7 +110,7 @@
             bag.Add("ContentType", typeof(Image).FullName);
             WorkflowManager.MessageWorkflow(image.Id, typeof(Image), null, "Publish", false, bag);
 
-            return image;
+            return image.Id;
         }
     }
 }

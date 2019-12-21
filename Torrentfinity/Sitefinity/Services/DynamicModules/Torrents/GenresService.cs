@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Linq;
     using System.Threading;
     using Telerik.Sitefinity;
     using Telerik.Sitefinity.Data;
@@ -60,12 +61,105 @@
 
         public DynamicContent Get(string genre)
         {
-            return null;
+            // Set the provider name for the DynamicModuleManager here. All available providers are listed in
+            // Administration -> Settings -> Advanced -> DynamicModules -> Providers
+            var providerName = String.Empty;
+
+            // Set a transaction name
+            var transactionName = "someTransactionName";
+
+
+            // Set the culture name for the multilingual fields
+            var cultureName = "en";
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(cultureName);
+
+            DynamicModuleManager dynamicModuleManager = DynamicModuleManager.GetManager(providerName, transactionName);
+            Type genreType = TypeResolutionService.ResolveType("Telerik.Sitefinity.DynamicTypes.Model.Torrents.Genre");
+            // CreateGenreItem(dynamicModuleManager, genreType, cultureName, transactionName);
+
+            // This is how we get the genre items through filtering
+            var myFilteredCollection = dynamicModuleManager.GetDataItems(genreType).Where(x => x.GetString("Name").Value == genre).FirstOrDefault();
+            // At this point myFilteredCollection contains the items that match the lambda expression passed to the Where extension method
+            // If you want only the first matching element you can freely get it by ".First()" extension method like this:
+            // var myFirstFilteredItem = myFilteredCollection.First();
+            return myFilteredCollection;
         }
 
-        public IEnumerable<GenreViewModel> GetAll()
+        public IEnumerable<string> GetAll()
         {
-            throw new NotImplementedException();
+            // Set the provider name for the DynamicModuleManager here. All available providers are listed in
+            // Administration -> Settings -> Advanced -> DynamicModules -> Providers
+            var providerName = String.Empty;
+
+            // Set a transaction name
+            var transactionName = "someTransactionName";
+
+            DynamicModuleManager dynamicModuleManager = DynamicModuleManager.GetManager(providerName, transactionName);
+            Type genreType = TypeResolutionService.ResolveType("Telerik.Sitefinity.DynamicTypes.Model.Torrents.Genre");
+          //  CreateGenreItem(dynamicModuleManager, genreType, transactionName);
+
+            // This is how we get the collection of Genre items
+            var myCollection = dynamicModuleManager.GetDataItems(genreType).Select(x=>x.GetString("Name").Value).ToList();
+            // At this point myCollection contains the items from type genreType
+            return myCollection;
         }
+
+        //// Creates a new genre item
+        //private void CreateGenreItem(DynamicModuleManager dynamicModuleManager, Type genreType, string transactionName)
+        //{
+        //    // Set the culture name for the multilingual fields
+        //    var cultureName = "en";
+        //    Thread.CurrentThread.CurrentUICulture = new CultureInfo(cultureName);
+
+        //    DynamicContent genreItem = dynamicModuleManager.CreateDataItem(genreType);
+
+        //    // This is how values for the properties are set 
+        //    genreItem.SetString("Name", "Some Name", cultureName);
+
+        //    genreItem.SetString("UrlName", "SomeUrlName", cultureName);
+        //    genreItem.SetValue("Owner", SecurityManager.GetCurrentUserId());
+        //    genreItem.SetValue("PublicationDate", DateTime.UtcNow);
+
+        //    genreItem.SetWorkflowStatus(dynamicModuleManager.Provider.ApplicationName, "Draft", new CultureInfo(cultureName));
+
+        //    // Create a version and commit the transaction in order changes to be persisted to data store
+        //    var versionManager = VersionManager.GetManager(null, transactionName);
+        //    versionManager.CreateVersion(genreItem, false);
+        //    TransactionManager.CommitTransaction(transactionName);
+
+        //    // Use lifecycle so that LanguageData and other Multilingual related values are correctly created
+        //    DynamicContent checkOutGenreItem = dynamicModuleManager.Lifecycle.CheckOut(genreItem) as DynamicContent;
+        //    DynamicContent checkInGenreItem = dynamicModuleManager.Lifecycle.CheckIn(checkOutGenreItem) as DynamicContent;
+        //    versionManager.CreateVersion(checkInGenreItem, false);
+        //    TransactionManager.CommitTransaction(transactionName);
+        //}
+
+        //// Creates a new genre item
+        //private void CreateGenreItem(DynamicModuleManager dynamicModuleManager, Type genreType, string cultureName, string transactionName)
+        //{
+        //    DynamicContent genreItem = dynamicModuleManager.CreateDataItem(genreType);
+
+        //    // This is how values for the properties are set 
+        //    genreItem.SetString("Name", "Some Name", cultureName);
+
+
+        //    genreItem.SetString("UrlName", "SomeUrlName", cultureName);
+        //    genreItem.SetValue("Owner", SecurityManager.GetCurrentUserId());
+        //    genreItem.SetValue("PublicationDate", DateTime.UtcNow);
+
+
+        //    genreItem.SetWorkflowStatus(dynamicModuleManager.Provider.ApplicationName, "Draft", new CultureInfo(cultureName));
+
+        //    // Create a version and commit the transaction in order changes to be persisted to data store
+        //    var versionManager = VersionManager.GetManager(null, transactionName);
+        //    versionManager.CreateVersion(genreItem, false);
+        //    TransactionManager.CommitTransaction(transactionName);
+
+        //    // Use lifecycle so that LanguageData and other Multilingual related values are correctly created
+        //    DynamicContent checkOutGenreItem = dynamicModuleManager.Lifecycle.CheckOut(genreItem) as DynamicContent;
+        //    DynamicContent checkInGenreItem = dynamicModuleManager.Lifecycle.CheckIn(checkOutGenreItem) as DynamicContent;
+        //    versionManager.CreateVersion(checkInGenreItem, false);
+        //    TransactionManager.CommitTransaction(transactionName);
+        //}
     }
 }

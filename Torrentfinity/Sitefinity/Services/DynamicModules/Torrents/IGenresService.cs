@@ -6,7 +6,7 @@
 
     public interface IGenresService
     {
-        IEnumerable<GenreViewModel> GetAll();
+        IEnumerable<string> GetAll();
 
         DynamicContent Get(string genre);
 

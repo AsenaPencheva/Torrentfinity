@@ -879,6 +879,7 @@
     <Content Include="AdminApp\elements.05d728b01f16488147e8.bundle.js" />
     <Content Include="AdminApp\favicon.ico" />
     <Content Include="AdminApp\index.html" />
+    <Content Include="AdminApp\sample.extensions.bundle.js" />
     <Content Include="AdminApp\vendors.066b73fdc96eb4ea4343.bundle.js" />
     <Content Include="App_Data\GeoLocation\citieslist.txt" />
     <Content Include="App_Data\RadCaptcha\0.wav" />
@@ -1056,7 +1057,6 @@
     <Compile Include="App_Start\RazorGeneratorMvcStart.cs" />
     <Compile Include="AzureWebRole.cs" />
     <Compile Include="Mvc\Controllers\TorrentsController.cs" />
-    <Compile Include="Mvc\Models\GenreViewModel.cs" />
     <Compile Include="Mvc\Models\TorrentViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sitefinity\Services\DynamicModules\Torrents\GenresService.cs" />

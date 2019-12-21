@@ -2,6 +2,7 @@
 {
     using System.Web;
     using System.Web.Mvc;
+    using Telerik.Microsoft.Practices.Unity.Utility;
     using Telerik.Sitefinity.Mvc;
     using Torrentfinity.Mvc.Models;
     using Torrentfinity.Sitefinity.Services.DynamicModules.Torrents;
@@ -10,16 +11,26 @@
     public class TorrentsController : Controller
     {
         private readonly ITorrentsService torrentsService;
+        private readonly IGenresService genresService;
 
-        public TorrentsController(ITorrentsService torrentsService)
+        public TorrentsController(ITorrentsService torrentsService, IGenresService genresService)
         {
+            Guard.ArgumentNotNull(torrentsService, nameof(torrentsService));
+            Guard.ArgumentNotNull(genresService, nameof(genresService));
+
             this.torrentsService = torrentsService;
+            this.genresService = genresService;
         }
 
         // GET: TorrentWidget
         public ActionResult Index()
         {
-            return View(new TorrentViewModel());
+            TorrentViewModel model = new TorrentViewModel
+            {
+                Genres = this.genresService.GetAll()
+            };
+
+            return View(model);
         }
 
         [HttpPost]
