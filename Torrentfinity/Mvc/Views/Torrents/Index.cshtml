@@ -1,4 +1,22 @@
 ﻿@model Torrentfinity.Mvc.Models.TorrentViewModel
+@using Telerik.Sitefinity.Modules.Pages;
+@using Telerik.Sitefinity.Mvc;
+@using Telerik.Sitefinity.Frontend.Mvc.Helpers;
 
 
-        @Html.EditorForModel(Model);
+@Html.Script(ScriptRef.AngularJS, "top")
+@using (Html.BeginForm("Create", "Torrents", FormMethod.Post, new { data_role = "torrents-widget" }))
+{
+    @Html.EditorForModel(Model)
+    <button type="submit">Create</button>
+}
+<div class="form-group">
+    <label for="image-field" class="m-top-sm">@Html.Resource("Image")</label>
+    <sf-image-field class="sf-Media--info modal-settings modal-settings-space"
+                    sf-model="properties.ImageId.PropertyValue"
+                    sf-image="selectedImage"
+                    sf-provider="properties.ImageProviderName.PropertyValue"
+                    sf-media-settings="@SettingsHelpers.GetMediaSettings("Image")"
+                    id="image-field"></sf-image-field>
+</div>
+@Html.Script(Url.WidgetContent("Mvc/Scripts/Torrents/torrents-widget.js"), "bottom")

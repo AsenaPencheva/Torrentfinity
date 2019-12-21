@@ -20,5 +20,13 @@
         {
             return View(new TorrentViewModel());
         }
+
+        [HttpPost]
+        public ActionResult Create(TorrentViewModel model)
+        {
+            this.torrentsService.CreateTorrent(model);
+
+            return View("Index", new TorrentViewModel());
+        }
     }
 }

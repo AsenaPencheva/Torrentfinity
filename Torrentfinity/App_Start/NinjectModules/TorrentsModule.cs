@@ -11,6 +11,7 @@
         public override void Load()
         {
             this.Bind<ITorrentsService>().To<TorrentsService>();
+            this.Bind<IGenresService>().To<GenresService>();
         }
     }
 }

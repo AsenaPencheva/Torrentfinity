@@ -8,7 +8,10 @@ namespace Torrentfinity.Mvc.Models
     public class TorrentViewModel
     {
         public string Title { get; set; }
-        public GenreViewModel Genre { get; set; }
+
+        public IEnumerable<string> Genres { get; set; }
+
+        public string Genre { get; set; }
 
         public string AdditionalInfo { get; set; }
 

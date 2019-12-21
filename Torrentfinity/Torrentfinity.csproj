@@ -1059,6 +1059,8 @@
     <Compile Include="Mvc\Models\GenreViewModel.cs" />
     <Compile Include="Mvc\Models\TorrentViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sitefinity\Services\DynamicModules\Torrents\GenresService.cs" />
+    <Compile Include="Sitefinity\Services\DynamicModules\Torrents\IGenresService.cs" />
     <Compile Include="Sitefinity\Services\DynamicModules\Torrents\ITorrentsService.cs" />
     <Compile Include="Sitefinity\Services\DynamicModules\Torrents\TorrentsService.cs" />
   </ItemGroup>
@@ -1070,6 +1072,7 @@
     <Content Include="App_Data\RadSpell\de-DE.tdf" />
     <Content Include="App_Data\GeoLocation\GeoLite2-City.mmdb" />
     <Content Include="Mvc\Views\Torrents\Index.cshtml" />
+    <Content Include="Mvc\Views\Torrents\Index.json" />
     <None Include="packages.config" />
     <Content Include="SampleTemplate.cshtml">
       <Generator>RazorGenerator</Generator>
