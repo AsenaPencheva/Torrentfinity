@@ -5,6 +5,8 @@
 
 
 @Html.Script(ScriptRef.AngularJS, "top")
+
+@Html.Script(Url.WidgetContent("Mvc/Scripts/Torrents/torrents-widget.js"), "bottom")
 @using (Html.BeginForm("Create", "Torrents", FormMethod.Post, new { data_role = "torrents-widget" }))
 {
     @Html.EditorForModel(Model)
@@ -19,4 +21,3 @@
                     sf-media-settings="@SettingsHelpers.GetMediaSettings("Image")"
                     id="image-field"></sf-image-field>
 </div>
-@Html.Script(Url.WidgetContent("Mvc/Scripts/Torrents/torrents-widget.js"), "bottom")
