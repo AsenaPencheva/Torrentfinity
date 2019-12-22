@@ -4,7 +4,6 @@
 @using Telerik.Sitefinity.Frontend.Mvc.Helpers;
 
 @Html.Script(ScriptRef.JQuery, "top")
-@Html.Script(ScriptRef.AngularJS, "top")
 
 @using (Html.BeginForm("Create", "Torrents", FormMethod.Post,
                         new { enctype = "multipart/form-ddata" }))
@@ -41,11 +40,8 @@
     <div class="form-group">
         @Html.LabelFor(m => m.FileAttach)
         @Html.TextBoxFor(m => m.FileAttach, new { type = "file", @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.FileAttach)
     </div>
     <div class="form-group">
         <button type="submit">Create</button>
     </div>
 }
-
-@Html.Script(Url.WidgetContent("Mvc/Scripts/Torrents/torrents-widget.js"), "bottom")

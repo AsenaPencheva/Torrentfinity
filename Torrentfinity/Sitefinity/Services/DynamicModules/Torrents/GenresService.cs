@@ -7,6 +7,7 @@
     using System.Threading;
     using Telerik.Sitefinity;
     using Telerik.Sitefinity.Data;
+    using Telerik.Sitefinity.Data.Linq.Dynamic;
     using Telerik.Sitefinity.DynamicModules;
     using Telerik.Sitefinity.DynamicModules.Model;
     using Telerik.Sitefinity.Model;
@@ -19,11 +20,7 @@
     {
         public DynamicContent CreateGenre(string genre)
         {
-            // Set the provider name for the DynamicModuleManager here. All available providers are listed in
-            // Administration -> Settings -> Advanced -> DynamicModules -> Providers
             var providerName = "OpenAccessProvider";
-
-            // Set a transaction name and get the version manager
             var transactionName = "createGenreTransaction";
             var versionManager = VersionManager.GetManager(null, transactionName);
 
@@ -35,18 +32,14 @@
             Type genreType = TypeResolutionService.ResolveType("Telerik.Sitefinity.DynamicTypes.Model.Torrents.Genre");
             DynamicContent genreItem = dynamicModuleManager.CreateDataItem(genreType);
 
-            // This is how values for the properties are set
             genreItem.SetString("Name", genre, cultureName);
-
 
             genreItem.SetString("UrlName", "SomeUrlName", cultureName);
             genreItem.SetValue("Owner", SecurityManager.GetCurrentUserId());
             genreItem.SetValue("PublicationDate", DateTime.UtcNow);
 
-
             genreItem.SetWorkflowStatus(dynamicModuleManager.Provider.ApplicationName, "Published", new CultureInfo(cultureName));
 
-            // Create a version and commit the transaction in order changes to be persisted to data store
             versionManager.CreateVersion(genreItem, true);
             TransactionManager.CommitTransaction(transactionName);
 
@@ -78,7 +71,7 @@
             // CreateGenreItem(dynamicModuleManager, genreType, cultureName, transactionName);
 
             // This is how we get the genre items through filtering
-            var myFilteredCollection = dynamicModuleManager.GetDataItems(genreType).Where(x => x.GetString("Name").Value == genre).FirstOrDefault();
+            var myFilteredCollection = dynamicModuleManager.GetDataItems(genreType).Where($"Name = \"{genre}\"").FirstOrDefault();
             // At this point myFilteredCollection contains the items that match the lambda expression passed to the Where extension method
             // If you want only the first matching element you can freely get it by ".First()" extension method like this:
             // var myFirstFilteredItem = myFilteredCollection.First();

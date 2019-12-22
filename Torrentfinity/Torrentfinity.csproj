@@ -878,8 +878,8 @@
     <Content Include="AdminApp\DecExtensions\dec-iris.extensions.bundle.js" />
     <Content Include="AdminApp\elements.05d728b01f16488147e8.bundle.js" />
     <Content Include="AdminApp\favicon.ico" />
+    <Content Include="AdminApp\grid.extensions.bundle.js" />
     <Content Include="AdminApp\index.html" />
-    <Content Include="AdminApp\sample.extensions.bundle.js" />
     <Content Include="AdminApp\vendors.066b73fdc96eb4ea4343.bundle.js" />
     <Content Include="App_Data\GeoLocation\citieslist.txt" />
     <Content Include="App_Data\RadCaptcha\0.wav" />

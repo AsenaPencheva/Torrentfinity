@@ -34,7 +34,7 @@
         }
 
         [HttpPost]
-        public ActionResult Create(TorrentViewModel model, HttpPostedFileBase image)
+        public ActionResult Create(TorrentViewModel model)
         {
             this.torrentsService.CreateTorrent(model);
 
