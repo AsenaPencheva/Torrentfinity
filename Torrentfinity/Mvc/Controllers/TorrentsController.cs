@@ -22,7 +22,6 @@
             this.genresService = genresService;
         }
 
-        // GET: TorrentWidget
         public ActionResult Index()
         {
             TorrentViewModel model = new TorrentViewModel
@@ -30,15 +29,31 @@
                 Genres = this.genresService.GetAll()
             };
 
-            return View(model);
+            return this.View(model);
         }
 
         [HttpPost]
         public ActionResult Create(TorrentViewModel model)
         {
-            this.torrentsService.CreateTorrent(model);
+            if (!this.ModelState.IsValid)
+            {
+                model.Genres = this.genresService.GetAll();
+                return this.View("Index", model);
+            }
 
-            return View("Index", new TorrentViewModel());
+            try
+            {
+                this.torrentsService.CreateTorrent(model);
+            }
+            catch (System.Exception ex)
+            {
+                this.ModelState.AddModelError(string.Empty, ex.Message);
+                model.Genres = this.genresService.GetAll();
+
+                return this.View("Index", model);
+            }
+
+            return this.RedirectToAction("Index");
         }
     }
 }

@@ -4,7 +4,6 @@
     using System.Globalization;
     using System.Linq;
     using System.Threading;
-    using Telerik.Microsoft.Practices.Unity.Utility;
     using Telerik.Sitefinity;
     using Telerik.Sitefinity.Data;
     using Telerik.Sitefinity.DynamicModules;
@@ -21,20 +20,13 @@
     using System.Text.RegularExpressions;
     using System.Collections.Generic;
     using Telerik.Sitefinity.Workflow;
+    using Telerik.Sitefinity.Data.Linq.Dynamic;
 
     public class TorrentsService : ITorrentsService
     {
-        private readonly IGenresService genresService;
-
-        public TorrentsService(IGenresService genresService)
-        {
-            Guard.ArgumentNotNull(genresService, nameof(genresService));
-
-            this.genresService = genresService;
-        }
-
         public void CreateTorrent(TorrentViewModel model)
         {
+            // validation for dublicate title
             var providerName = "OpenAccessProvider";
             var transactionName = "createTorrentTransaction";
             var versionManager = VersionManager.GetManager(null, transactionName);
@@ -45,35 +37,30 @@
 
             DynamicModuleManager dynamicModuleManager = DynamicModuleManager.GetManager(providerName, transactionName);
             Type torrentType = TypeResolutionService.ResolveType("Telerik.Sitefinity.DynamicTypes.Model.Torrents.Torrent");
-            DynamicContent torrentItem = dynamicModuleManager.CreateDataItem(torrentType);
 
-            DynamicContent genreType = this.genresService.Get(model.Genre);
-            if (genreType == null)
+            var torrentItem = dynamicModuleManager.GetDataItems(torrentType).Where($"Title = \"{model.Title}\"").FirstOrDefault();
+            if (torrentItem != null)
             {
-                genreType = this.genresService.CreateGenre(model.Genre);
+                throw new ArgumentException("Torrent with that title already exists!");
             }
-            torrentItem.CreateRelation(genreType, nameof(model.Genre));
 
+            torrentItem = dynamicModuleManager.CreateDataItem(torrentType);
+
+            torrentItem.SetValue(nameof(model.Genre), model.Genre);
             torrentItem.SetString(nameof(model.Title), model.Title, cultureName);
             torrentItem.SetString(nameof(model.AdditionalInfo), model.AdditionalInfo, cultureName);
             torrentItem.SetString(nameof(model.Description), model.Description, cultureName);
             torrentItem.SetString(nameof(model.DownloadLink), model.DownloadLink, cultureName);
 
-            torrentItem.SetString("UrlName", "SomeUrlName", cultureName);
+            torrentItem.SetString("UrlName", model.Title, cultureName);
             torrentItem.SetValue("Owner", SecurityManager.GetCurrentUserId());
             torrentItem.SetValue("PublicationDate", DateTime.UtcNow);
 
-            LibrariesManager imageManager = LibrariesManager.GetManager();
+            Image imageItemId = this.CreateImage(model.Image);
+            torrentItem.CreateRelation(imageItemId, nameof(model.Image));
 
-
-            Guid imageItemId = this.CreateImage(model.FileAttach);
-            //   imageManager.GetImages().FirstOrDefault(i => i.Status == Telerik.Sitefinity.GenericContent.Model.ContentLifecycleStatus.Master);
-          
-                torrentItem.CreateRelation(imageItemId, providerName, "Image", "Image");
-           
-
-            torrentItem.SetWorkflowStatus(dynamicModuleManager.Provider.ApplicationName, "Draft", new CultureInfo(cultureName)); // draft???
-            versionManager.CreateVersion(torrentItem, false); // true?
+            torrentItem.SetWorkflowStatus(dynamicModuleManager.Provider.ApplicationName, "Draft", new CultureInfo(cultureName));
+            versionManager.CreateVersion(torrentItem, false);
             TransactionManager.CommitTransaction(transactionName);
 
             // Use lifecycle so that LanguageData and other Multilingual related values are correctly created
@@ -83,34 +70,29 @@
             TransactionManager.CommitTransaction(transactionName);
         }
 
-        private Guid CreateImage(HttpPostedFileBase fileAttach)
+        private Image CreateImage(HttpPostedFileBase fileAttach)
         {
             LibrariesManager librariesManager = LibrariesManager.GetManager();
             Image image = librariesManager.CreateImage();
             Album album = librariesManager.GetAlbums().FirstOrDefault();
             image.Parent = album;
-
-            //Set the properties of the album post.
             image.Title = fileAttach.FileName;
             image.DateCreated = DateTime.UtcNow;
             image.PublicationDate = DateTime.UtcNow;
             image.LastModified = DateTime.UtcNow;
-            image.UrlName = Regex.Replace(fileAttach.FileName.ToLower(), @"[^\w\-\!\$\'\(\)\=\@\d_]+", "-");
+            image.UrlName = image.Id.ToString();
             image.MediaFileUrlName = Regex.Replace(fileAttach.FileName.ToLower(), @"[^\w\-\!\$\'\(\)\=\@\d_]+", "-");
 
-            //Upload the image file.
-            // The imageExtension parameter must contain '.', for example '.jpeg'
-            librariesManager.Upload(image, fileAttach.InputStream, "." + fileAttach.FileName.Split('.').Last());  // need refactor
+            string extension = "." + fileAttach.FileName.Split('.').Last();
+            librariesManager.Upload(image, fileAttach.InputStream, extension);
 
-            //Save the changes.
             librariesManager.SaveChanges();
 
-            //Publish the Albums item. The live version acquires new ID.
             var bag = new Dictionary<string, string>();
             bag.Add("ContentType", typeof(Image).FullName);
             WorkflowManager.MessageWorkflow(image.Id, typeof(Image), null, "Publish", false, bag);
 
-            return image.Id;
+            return image;
         }
     }
 }

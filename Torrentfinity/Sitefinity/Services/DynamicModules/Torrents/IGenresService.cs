@@ -8,8 +8,8 @@
     {
         IEnumerable<string> GetAll();
 
-        DynamicContent Get(string genre);
+        //DynamicContent Get(string genre);
 
-        DynamicContent CreateGenre(string genre);
+        //DynamicContent CreateGenre(string genre);
     }
 }

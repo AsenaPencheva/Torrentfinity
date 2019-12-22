@@ -1,47 +1,34 @@
 ﻿@model Torrentfinity.Mvc.Models.TorrentViewModel
-@using Telerik.Sitefinity.Modules.Pages;
-@using Telerik.Sitefinity.Mvc;
-@using Telerik.Sitefinity.Frontend.Mvc.Helpers;
-
-@Html.Script(ScriptRef.JQuery, "top")
 
 @using (Html.BeginForm("Create", "Torrents", FormMethod.Post,
-                        new { enctype = "multipart/form-ddata" }))
+                        new { enctype = "multipart/form-data" }))
 {
     <div class="form-group">
         @Html.LabelFor(m => m.Title)
         @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Title)
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.AdditionalInfo)
         @Html.TextBoxFor(m => m.AdditionalInfo, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.AdditionalInfo)
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.Description)
         @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Description)
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.DownloadLink)
         @Html.TextBoxFor(m => m.DownloadLink, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.DownloadLink)
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.Genre)
-        @Html.DropDownListFor(m => m.Genre,
-                    new SelectList(Model.Genres),
-                    "Select Genre",
-                    new { @class = "form-control" })
-        @*@Html.TextBoxFor(m => m.Genre, new { @class = "form-control" })*@
-        @Html.ValidationMessageFor(m => m.Genre)
+        @Html.DropDownList("Genre", new SelectList(Model.Genres), "Select Genre", new { @class = "form-control" })
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.FileAttach)
-        @Html.TextBoxFor(m => m.FileAttach, new { type = "file", @class = "form-control" })
+        @Html.LabelFor(m => m.Image)
+        @Html.TextBoxFor(m => m.Image, new { type = "file", @class = "form-control" })
     </div>
     <div class="form-group">
+        @Html.ValidationSummary()
         <button type="submit">Create</button>
     </div>
 }
