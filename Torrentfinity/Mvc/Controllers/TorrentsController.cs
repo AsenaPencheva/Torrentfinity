@@ -1,6 +1,6 @@
 ﻿namespace Torrentfinity.Mvc.Controllers
 {
-    using System.Web;
+    using System.Globalization;
     using System.Web.Mvc;
     using Telerik.Microsoft.Practices.Unity.Utility;
     using Telerik.Sitefinity.Mvc;
@@ -24,6 +24,7 @@
 
         public ActionResult Index()
         {
+            var xxx = CultureInfo.CurrentCulture;
             TorrentViewModel model = new TorrentViewModel
             {
                 Genres = this.genresService.GetAll()

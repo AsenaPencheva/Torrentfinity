@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
-
-namespace Torrentfinity.Mvc.Models
+﻿namespace Torrentfinity.Mvc.Models
 {
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.Web;
+
     public class TorrentViewModel
     {
         public TorrentViewModel()
@@ -14,7 +12,10 @@ namespace Torrentfinity.Mvc.Models
         }
 
         [Required]
-        public string Title { get; set; }
+        public string TitleEn { get; set; }
+
+        [Required]
+        public string TitleBg { get; set; }
 
         public IEnumerable<string> Genres { get; set; }
 
@@ -22,9 +23,14 @@ namespace Torrentfinity.Mvc.Models
         public string Genre { get; set; }
 
         [Required]
-        public string AdditionalInfo { get; set; }
+        public string AdditionalInfoBg { get; set; }
 
-        public string Description { get; set; }
+        [Required]
+        public string AdditionalInfoEn { get; set; }
+
+        public string DescriptionBg { get; set; }
+
+        public string DescriptionEn { get; set; }
 
         [Required]
         public string DownloadLink { get; set; }

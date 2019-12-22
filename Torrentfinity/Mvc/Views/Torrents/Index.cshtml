@@ -1,34 +1,35 @@
 ﻿@model Torrentfinity.Mvc.Models.TorrentViewModel
+@using Resource =Torrentfinity.Mvc.Resources.TorrentsWidget
 
 @using (Html.BeginForm("Create", "Torrents", FormMethod.Post,
                         new { enctype = "multipart/form-data" }))
 {
     <div class="form-group">
-        @Html.LabelFor(m => m.Title)
-        @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+        @Html.Label(Resource.Title)
+        @Html.TextBoxFor(m => m.TitleEn, new { @class = "form-control" })
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.AdditionalInfo)
-        @Html.TextBoxFor(m => m.AdditionalInfo, new { @class = "form-control" })
+        @Html.Label(Resource.AdditionalInfo)
+        @Html.TextBoxFor(m => m.AdditionalInfoEn, new { @class = "form-control" })
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.Description)
-        @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+        @Html.Label(Resource.Description)
+        @Html.TextBoxFor(m => m.DescriptionEn, new { @class = "form-control" })
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.DownloadLink)
+        @Html.Label(Resource.DownloadLink)
         @Html.TextBoxFor(m => m.DownloadLink, new { @class = "form-control" })
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.Genre)
+        @Html.Label(Resource.Genre)
         @Html.DropDownList("Genre", new SelectList(Model.Genres), "Select Genre", new { @class = "form-control" })
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.Image)
+        @Html.Label(Resource.Image)
         @Html.TextBoxFor(m => m.Image, new { type = "file", @class = "form-control" })
     </div>
     <div class="form-group">
         @Html.ValidationSummary()
-        <button type="submit">Create</button>
+        <button type="submit">@Resource.Create</button>
     </div>
 }

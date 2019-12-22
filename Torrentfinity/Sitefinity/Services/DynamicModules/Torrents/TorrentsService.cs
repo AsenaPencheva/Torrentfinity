@@ -38,7 +38,7 @@
             DynamicModuleManager dynamicModuleManager = DynamicModuleManager.GetManager(providerName, transactionName);
             Type torrentType = TypeResolutionService.ResolveType("Telerik.Sitefinity.DynamicTypes.Model.Torrents.Torrent");
 
-            var torrentItem = dynamicModuleManager.GetDataItems(torrentType).Where($"Title = \"{model.Title}\"").FirstOrDefault();
+            var torrentItem = dynamicModuleManager.GetDataItems(torrentType).Where($"Title = \"{model.TitleEn}\"").FirstOrDefault();
             if (torrentItem != null)
             {
                 throw new ArgumentException("Torrent with that title already exists!");
@@ -47,12 +47,12 @@
             torrentItem = dynamicModuleManager.CreateDataItem(torrentType);
 
             torrentItem.SetValue(nameof(model.Genre), model.Genre);
-            torrentItem.SetString(nameof(model.Title), model.Title, cultureName);
-            torrentItem.SetString(nameof(model.AdditionalInfo), model.AdditionalInfo, cultureName);
-            torrentItem.SetString(nameof(model.Description), model.Description, cultureName);
-            torrentItem.SetString(nameof(model.DownloadLink), model.DownloadLink, cultureName);
+            torrentItem.SetString(nameof(model.TitleEn), "Title", cultureName);
+            torrentItem.SetString(nameof(model.AdditionalInfoEn),"AdditionalInfo", cultureName);
+            torrentItem.SetString(nameof(model.DescriptionEn), "Description", cultureName);
+            torrentItem.SetString(nameof(model.DownloadLink), "DownloadLink", cultureName);
 
-            torrentItem.SetString("UrlName", model.Title, cultureName);
+            torrentItem.SetString("UrlName", model.TitleEn, cultureName);
             torrentItem.SetValue("Owner", SecurityManager.GetCurrentUserId());
             torrentItem.SetValue("PublicationDate", DateTime.UtcNow);
 
