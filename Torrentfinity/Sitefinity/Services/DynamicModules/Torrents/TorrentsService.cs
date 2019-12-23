@@ -5,48 +5,50 @@
     using System.Linq;
     using System.Threading;
     using Telerik.Sitefinity;
-    using Telerik.Sitefinity.Data;
     using Telerik.Sitefinity.DynamicModules;
     using Telerik.Sitefinity.DynamicModules.Model;
     using Telerik.Sitefinity.Model;
-    using Telerik.Sitefinity.Modules.Libraries;
     using Telerik.Sitefinity.RelatedData;
-    using Telerik.Sitefinity.Security;
-    using Telerik.Sitefinity.Utilities.TypeConverters;
     using Telerik.Sitefinity.Versioning;
     using Torrentfinity.Mvc.Models;
     using Telerik.Sitefinity.Libraries.Model;
-    using System.Web;
-    using System.Text.RegularExpressions;
     using System.Collections.Generic;
-    using Telerik.Sitefinity.Workflow;
     using Telerik.Sitefinity.Data.Linq.Dynamic;
     using Torrentfinity.Sitefinity.Services.DynamicModules.BuldInContents;
     using Telerik.Microsoft.Practices.Unity.Utility;
+    using Torrentfinity.Sitefinity.Common.Providers;
 
     public class TorrentsService : ITorrentsService
     {
         private readonly IImagesService imagesService;
+        private readonly IDateTimeProvider dateTimeProvider;
+        private readonly IManagerProvider managerProvider;
         private readonly IEnumerable<string> avaliableLanguages = new List<string> { "en", "bg" };
 
-        public TorrentsService(IImagesService imagesService)
+        public TorrentsService(IImagesService imagesService, IDateTimeProvider dateTimeProvider, IManagerProvider managerProvider)
         {
             Guard.ArgumentNotNull(imagesService, nameof(imagesService));
+            Guard.ArgumentNotNull(dateTimeProvider, nameof(dateTimeProvider));
+            Guard.ArgumentNotNull(managerProvider, nameof(managerProvider));
 
             this.imagesService = imagesService;
+            this.dateTimeProvider = dateTimeProvider;
+            this.managerProvider = managerProvider;
         }
 
         public void CreateTorrent(TorrentViewModel model)
         {
+            Guard.ArgumentNotNull(model, nameof(model));
+
             string providerName = "OpenAccessProvider";
             string transactionName = "createTorrentTransaction";
-            VersionManager versionManager = VersionManager.GetManager(null, transactionName);
+            VersionManager versionManager = managerProvider.GetVersionManager(null, transactionName);
 
             string cultureName = "en";
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cultureName);
 
-            DynamicModuleManager dynamicModuleManager = DynamicModuleManager.GetManager(providerName, transactionName);
-            Type torrentType = TypeResolutionService.ResolveType("Telerik.Sitefinity.DynamicTypes.Model.Torrents.Torrent");
+            DynamicModuleManager dynamicModuleManager = managerProvider.GetDynamicModuleManager(providerName, transactionName);
+            Type torrentType = this.managerProvider.ResolveType("Telerik.Sitefinity.DynamicTypes.Model.Torrents.Torrent");
 
             string titleEn = model.LanguageContents.FirstOrDefault(x => x.Language == "en")?.Title;
             
@@ -71,21 +73,21 @@
             }
             torrentItem.SetValue(nameof(model.Genre), model.Genre);
             torrentItem.SetValue("DownloadLink", model.DownloadLink);
-            torrentItem.SetValue("Owner", SecurityManager.GetCurrentUserId());
-            torrentItem.SetValue("PublicationDate", DateTime.UtcNow);
+            torrentItem.SetValue("Owner", this.managerProvider.GetCurrentUserId());
+            torrentItem.SetValue("PublicationDate", this.dateTimeProvider.UtcNow);
 
             Guid imageItemId = this.imagesService.CreateImage(model.Image, null, null);
             torrentItem.CreateRelation(imageItemId,"df", typeof(Image).FullName, "Image");
 
             torrentItem.SetWorkflowStatus(dynamicModuleManager.Provider.ApplicationName, "Draft", new CultureInfo(cultureName));
             versionManager.CreateVersion(torrentItem, false);
-            TransactionManager.CommitTransaction(transactionName);
+            this.managerProvider.CommitTransaction(transactionName);
 
             // Use lifecycle so that LanguageData and other Multilingual related values are correctly created
             DynamicContent checkOutTorrentItem = dynamicModuleManager.Lifecycle.CheckOut(torrentItem) as DynamicContent;
             DynamicContent checkInTorrentItem = dynamicModuleManager.Lifecycle.CheckIn(checkOutTorrentItem) as DynamicContent;
             versionManager.CreateVersion(checkInTorrentItem, false);
-            TransactionManager.CommitTransaction(transactionName);
+            this.managerProvider.CommitTransaction(transactionName);
         }
 
         public IEnumerable<LanguageContents> GetAvailableLanguages()
