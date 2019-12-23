@@ -47,7 +47,7 @@
             string cultureName = "en";
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cultureName);
 
-            DynamicModuleManager dynamicModuleManager = managerProvider.GetDynamicModuleManager(providerName, transactionName);
+            var dynamicModuleManager = managerProvider.GetDynamicModuleManager(providerName, transactionName);
             Type torrentType = this.managerProvider.ResolveType("Telerik.Sitefinity.DynamicTypes.Model.Torrents.Torrent");
 
             string titleEn = model.LanguageContents.FirstOrDefault(x => x.Language == "en")?.Title;
