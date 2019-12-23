@@ -9,28 +9,15 @@
         public TorrentViewModel()
         {
             this.Genres = new List<string>();
+            this.LanguageContents = new List<LanguageContents>();
         }
-
-        [Required]
-        public string TitleEn { get; set; }
-
-        [Required]
-        public string TitleBg { get; set; }
 
         public IEnumerable<string> Genres { get; set; }
 
+        public IEnumerable<LanguageContents> LanguageContents { get; set; }
+
         [Required]
         public string Genre { get; set; }
-
-        [Required]
-        public string AdditionalInfoBg { get; set; }
-
-        [Required]
-        public string AdditionalInfoEn { get; set; }
-
-        public string DescriptionBg { get; set; }
-
-        public string DescriptionEn { get; set; }
 
         [Required]
         public string DownloadLink { get; set; }

@@ -19,11 +19,8 @@
             DynamicModuleManager dynamicModuleManager = DynamicModuleManager.GetManager(providerName, transactionName);
             Type genreType = TypeResolutionService.ResolveType("Telerik.Sitefinity.DynamicTypes.Model.Torrents.Genre");
             
-            //  CreateGenreItem(dynamicModuleManager, genreType, transactionName);
-            //var x = dynamicModuleManager.GetDataItems(genreType).ToList();
-            // This is how we get the collection of Genre items
-            var myCollection = dynamicModuleManager.GetDataItems(genreType).ToList().Where(x => !x.IsDeleted).Select(x => x.GetString("Name").Value).Distinct().ToList();
-            // At this point myCollection contains the items from type genreType
+            var myCollection = dynamicModuleManager.GetDataItems(genreType).Where(i => i.Status == Telerik.Sitefinity.GenericContent.Model.ContentLifecycleStatus.Live && i.Visible == true).Select(x => x.GetString("Name").Value).Distinct().ToList();
+            
             return myCollection;
         }
 

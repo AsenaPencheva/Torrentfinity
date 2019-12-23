@@ -23,11 +23,11 @@
         }
 
         public ActionResult Index()
-        {
-            var xxx = CultureInfo.CurrentCulture;
+        { 
             TorrentViewModel model = new TorrentViewModel
             {
-                Genres = this.genresService.GetAll()
+                Genres = this.genresService.GetAll(),
+                LanguageContents= this.torrentsService.GetAvailableLanguages()
             };
 
             return this.View(model);
@@ -39,6 +39,7 @@
             if (!this.ModelState.IsValid)
             {
                 model.Genres = this.genresService.GetAll();
+                model.LanguageContents = this.torrentsService.GetAvailableLanguages();
                 return this.View("Index", model);
             }
 
@@ -50,6 +51,7 @@
             {
                 this.ModelState.AddModelError(string.Empty, ex.Message);
                 model.Genres = this.genresService.GetAll();
+                model.LanguageContents = this.torrentsService.GetAvailableLanguages();
 
                 return this.View("Index", model);
             }

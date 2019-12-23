@@ -1,6 +1,7 @@
 ﻿namespace Torrentfinity.App_Start.NinjectModules
 {
     using Ninject.Modules;
+    using Torrentfinity.Sitefinity.Services.DynamicModules.BuldInContents;
     using Torrentfinity.Sitefinity.Services.DynamicModules.Torrents;
 
     public class TorrentsModule : NinjectModule
@@ -12,6 +13,7 @@
         {
             this.Bind<ITorrentsService>().To<TorrentsService>();
             this.Bind<IGenresService>().To<GenresService>();
+            this.Bind<IImagesService>().To<ImagesService>();
         }
     }
 }

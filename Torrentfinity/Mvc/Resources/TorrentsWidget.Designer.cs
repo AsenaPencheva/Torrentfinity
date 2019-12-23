@@ -115,6 +115,15 @@ namespace Torrentfinity.Mvc.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select Genre.
+        /// </summary>
+        public static string SelectGenre {
+            get {
+                return ResourceManager.GetString("SelectGenre", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Title.
         /// </summary>
         public static string Title {

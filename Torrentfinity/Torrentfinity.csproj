@@ -1057,6 +1057,7 @@
     <Compile Include="App_Start\RazorGeneratorMvcStart.cs" />
     <Compile Include="AzureWebRole.cs" />
     <Compile Include="Mvc\Controllers\TorrentsController.cs" />
+    <Compile Include="Mvc\Models\TorrentLocalization.cs" />
     <Compile Include="Mvc\Models\TorrentViewModel.cs" />
     <Compile Include="Mvc\Resources\TorrentsWidget.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -1064,6 +1065,8 @@
       <DependentUpon>TorrentsWidget.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sitefinity\Services\DynamicModules\BuldInContents\IImagesService.cs" />
+    <Compile Include="Sitefinity\Services\DynamicModules\BuldInContents\ImagesService.cs" />
     <Compile Include="Sitefinity\Services\DynamicModules\Torrents\GenresService.cs" />
     <Compile Include="Sitefinity\Services\DynamicModules\Torrents\IGenresService.cs" />
     <Compile Include="Sitefinity\Services\DynamicModules\Torrents\ITorrentsService.cs" />
@@ -1255,6 +1258,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>TorrentsWidget.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Sitefinity\Common\Constants\" />
+    <Folder Include="Sitefinity\Common\Providers\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

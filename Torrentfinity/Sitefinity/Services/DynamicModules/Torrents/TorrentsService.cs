@@ -21,43 +21,61 @@
     using System.Collections.Generic;
     using Telerik.Sitefinity.Workflow;
     using Telerik.Sitefinity.Data.Linq.Dynamic;
+    using Torrentfinity.Sitefinity.Services.DynamicModules.BuldInContents;
+    using Telerik.Microsoft.Practices.Unity.Utility;
 
     public class TorrentsService : ITorrentsService
     {
+        private readonly IImagesService imagesService;
+        private readonly IEnumerable<string> avaliableLanguages = new List<string> { "en", "bg" };
+
+        public TorrentsService(IImagesService imagesService)
+        {
+            Guard.ArgumentNotNull(imagesService, nameof(imagesService));
+
+            this.imagesService = imagesService;
+        }
+
         public void CreateTorrent(TorrentViewModel model)
         {
-            // validation for dublicate title
-            var providerName = "OpenAccessProvider";
-            var transactionName = "createTorrentTransaction";
-            var versionManager = VersionManager.GetManager(null, transactionName);
+            string providerName = "OpenAccessProvider";
+            string transactionName = "createTorrentTransaction";
+            VersionManager versionManager = VersionManager.GetManager(null, transactionName);
 
-            // Set the culture name for the multilingual fields
-            var cultureName = "en";
+            string cultureName = "en";
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cultureName);
 
             DynamicModuleManager dynamicModuleManager = DynamicModuleManager.GetManager(providerName, transactionName);
             Type torrentType = TypeResolutionService.ResolveType("Telerik.Sitefinity.DynamicTypes.Model.Torrents.Torrent");
 
-            var torrentItem = dynamicModuleManager.GetDataItems(torrentType).Where($"Title = \"{model.TitleEn}\"").FirstOrDefault();
+            string titleEn = model.LanguageContents.FirstOrDefault(x => x.Language == "en")?.Title;
+            
+            DynamicContent torrentItem = dynamicModuleManager.GetDataItems(torrentType).Where($"Title = \"{titleEn}\"").FirstOrDefault();
             if (torrentItem != null)
             {
                 throw new ArgumentException("Torrent with that title already exists!");
             }
 
             torrentItem = dynamicModuleManager.CreateDataItem(torrentType);
+            foreach (var languageContent in model.LanguageContents)
+            {
+                torrentItem.SetString("Title", languageContent.Title, languageContent.Language);
+                torrentItem.SetString("Description", languageContent.Description, languageContent.Language);
+                torrentItem.SetString("AdditionalInfo", languageContent.AdditionalInfo, languageContent.Language);
+                torrentItem.SetString("UrlName", torrentItem.Id.ToString(), languageContent.Language);
+            }
 
+            if (string.IsNullOrWhiteSpace(titleEn))
+            {
+                titleEn = torrentItem.Id.ToString();
+            }
             torrentItem.SetValue(nameof(model.Genre), model.Genre);
-            torrentItem.SetString(nameof(model.TitleEn), "Title", cultureName);
-            torrentItem.SetString(nameof(model.AdditionalInfoEn),"AdditionalInfo", cultureName);
-            torrentItem.SetString(nameof(model.DescriptionEn), "Description", cultureName);
-            torrentItem.SetString(nameof(model.DownloadLink), "DownloadLink", cultureName);
-
-            torrentItem.SetString("UrlName", model.TitleEn, cultureName);
+            torrentItem.SetValue("DownloadLink", model.DownloadLink);
             torrentItem.SetValue("Owner", SecurityManager.GetCurrentUserId());
             torrentItem.SetValue("PublicationDate", DateTime.UtcNow);
 
-            Image imageItemId = this.CreateImage(model.Image);
-            torrentItem.CreateRelation(imageItemId, nameof(model.Image));
+            Guid imageItemId = this.imagesService.CreateImage(model.Image, null, null);
+            torrentItem.CreateRelation(imageItemId,"df", typeof(Image).FullName, "Image");
 
             torrentItem.SetWorkflowStatus(dynamicModuleManager.Provider.ApplicationName, "Draft", new CultureInfo(cultureName));
             versionManager.CreateVersion(torrentItem, false);
@@ -70,29 +88,27 @@
             TransactionManager.CommitTransaction(transactionName);
         }
 
-        private Image CreateImage(HttpPostedFileBase fileAttach)
+        public IEnumerable<LanguageContents> GetAvailableLanguages()
         {
-            LibrariesManager librariesManager = LibrariesManager.GetManager();
-            Image image = librariesManager.CreateImage();
-            Album album = librariesManager.GetAlbums().FirstOrDefault();
-            image.Parent = album;
-            image.Title = fileAttach.FileName;
-            image.DateCreated = DateTime.UtcNow;
-            image.PublicationDate = DateTime.UtcNow;
-            image.LastModified = DateTime.UtcNow;
-            image.UrlName = image.Id.ToString();
-            image.MediaFileUrlName = Regex.Replace(fileAttach.FileName.ToLower(), @"[^\w\-\!\$\'\(\)\=\@\d_]+", "-");
+            //string providerName = "OpenAccessProvider";
+            //string transactionName = "getTorrentAvailableLanguagesTransaction";
+            //DynamicModuleManager dynamicModuleManager = DynamicModuleManager.GetManager(providerName, transactionName);
+            //Type torrentType = TypeResolutionService.ResolveType("Telerik.Sitefinity.DynamicTypes.Model.Torrents.Torrent");
+            //DynamicContent torrentItem = dynamicModuleManager.GetDataItems(torrentType).FirstOrDefault();
 
-            string extension = "." + fileAttach.FileName.Split('.').Last();
-            librariesManager.Upload(image, fileAttach.InputStream, extension);
+            ICollection<LanguageContents> result = new List<LanguageContents>();
+            foreach (var language in this.avaliableLanguages)
+            {
+                if (!string.IsNullOrWhiteSpace(language))
+                {
+                    result.Add(new LanguageContents
+                    {
+                        Language = language
+                    });
+                }
+            }
 
-            librariesManager.SaveChanges();
-
-            var bag = new Dictionary<string, string>();
-            bag.Add("ContentType", typeof(Image).FullName);
-            WorkflowManager.MessageWorkflow(image.Id, typeof(Image), null, "Publish", false, bag);
-
-            return image;
+            return result;
         }
     }
 }
