@@ -20,7 +20,7 @@
     "lite-server": "2.4.0",
     "mkdirp": "0.5.1",
     "mock-browser": "0.92.12",
-    "moment": "2.22.2",
+    "moment": "2.29.2",
     "path": "0.12.7",
     "protractor": "5.4.1",
     "protractor-angular-screenshot-reporter": "0.1.2",
