@@ -16,7 +16,7 @@
     "fs": "0.0.1-security",
     "fs-extra": "2.1.2",
     "jasmine-expect": "3.0.1",
-    "jasmine-reporters": "2.2.1",
+    "jasmine-reporters": "2.5.0",
     "lite-server": "2.4.0",
     "mkdirp": "0.5.1",
     "mock-browser": "0.92.12",
